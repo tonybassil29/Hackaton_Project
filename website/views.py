@@ -294,6 +294,24 @@ def import_csv():
 
     return redirect(url_for('views.contacts'))
 
+@views.route('/toggle_user/<int:id>', methods=['POST'])
+def toggle_user(id):
+    # Récupérer l'utilisateur de la base de données en utilisant l'id
+    user = User.query.get(id)
+
+    # Inverser l'état d'activation/désactivation
+    user.is_active = not user.is_active
+
+    # Sauvegarder les modifications dans la base de données
+    db.session.commit()
+
+    # Ajouter un message flash en fonction de l'état actuel de l'utilisateur
+    if user.is_active:
+        flash(f'Utilisateur {user.id} a été activé.', category='success')
+    else:
+        flash(f'Utilisateur {user.id} a été désactivé.', category='success')
+
+    return redirect(url_for('views.admin_users'))
 
 @views.route('/edit-contact/<int:contact_id>', methods=['GET', 'POST'])
 @login_required

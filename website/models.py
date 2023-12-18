@@ -34,3 +34,4 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     notes = db.relationship('Note')
     contacts = db.relationship('Contact')
+    is_active = db.Column(db.Boolean, default=True, nullable=False)  # Ajout de la colonne is_active

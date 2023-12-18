@@ -18,8 +18,9 @@
                         <th>Name</th>
                         <th>Email</th>
                      <th class="notes-column">Notes</th>
-                        <th>Action</th> <!-- Ajout de la colonne pour l'action -->
-                        <!-- Ajoutez d'autres en-têtes de colonne pour les détails que vous souhaitez afficher -->
+                         <th>Etat</th>
+                        <th>Action</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -39,16 +40,30 @@
         Aucune note disponible
     {% endif %}
 </td>
+                    <td>
+                          <form method="post" action="{{ url_for('views.toggle_user', id=user.id) }}" style="display: inline-block; margin-right: 5px;">
+        <input type="hidden" name="id" value="{{ user.id }}">
+        <button type="submit" class="btn {% if user.is_active %}btn-success{% else %}btn-danger{% endif %}">
+            {% if user.is_active %}
+                Actif
+            {% else %}
+                Désactif
+            {% endif %}
+        </button>
+    </form>
+                    </td>
 
-                        <td>
-                            <form method="post" action="{{ url_for('views.delete_user', id=user.id) }}">
-            <input type="hidden" name="id" value="{{ user.id }}">
-            <button type="submit" class="btn btn-danger">Supprimer</button>
-        </form>
+                      <td>
 
-                        </td>
-                        <!-- Ajoutez d'autres colonnes pour afficher plus de détails -->
-                    </tr>
+
+    <form method="post" action="{{ url_for('views.delete_user', id=user.id) }}" style="display: inline-block;">
+        <input type="hidden" name="id" value="{{ user.id }}">
+        <button type="submit" class="btn btn-primary">Supprimer</button>
+    </form>
+</td>
+
+
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>

@@ -17,21 +17,23 @@ def login():
         password = request.form.get('password')
 
         if email == 'admin' and password == 'admin':
-
             flash('Logged in as admin!', category='success')
-            return redirect(url_for('views.admin_home'))
+            return redirect(url_for('views.admin_users'))
 
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
-            flash('Logged in successfully!', category='success')
-            login_user(user, remember=True)
-            return redirect(url_for('views.home'))
+            if user.is_active:
+                flash('Logged in successfully!', category='success')
+                login_user(user, remember=True)
+                return redirect(url_for('views.home'))
+            else:
+                flash('Votre compte est désactivé. Veuillez contacter l\'administrateur.', category='error')
+                return redirect(url_for('auth.login'))
 
         flash('Incorrect email or password. Please try again.', category='error')
 
     return render_template("login.html", user=current_user, is_admin=is_admin)
-
 
 @auth.route('/forgot', methods=['GET', 'POST'])
 def forgot():
