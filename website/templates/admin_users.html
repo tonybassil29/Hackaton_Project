@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+    <br>
+    <style>
+     .notes-column {
+        padding-left: 20px; /* Ajustez cette valeur selon vos besoins */
+    }
+</style>
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <h1 class="text-center">Users</h1>
+            <br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                     <th class="notes-column">Notes</th>
+                        <th>Action</th> <!-- Ajout de la colonne pour l'action -->
+                        <!-- Ajoutez d'autres en-têtes de colonne pour les détails que vous souhaitez afficher -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.email }}</td>
+                       <td>
+    {% if user.notes %}
+        <ul>
+            {% for note in user.notes %}
+                <li>{{ note.data }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        Aucune note disponible
+    {% endif %}
+</td>
+
+                        <td>
+                            <form method="post" action="{{ url_for('views.delete_user', id=user.id) }}">
+            <input type="hidden" name="id" value="{{ user.id }}">
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+        </form>
+
+                        </td>
+                        <!-- Ajoutez d'autres colonnes pour afficher plus de détails -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}Modifier le contact{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Balises meta, title, etc. -->
+
+    <!-- Ajouter le lien vers le fichier CSS du Bootstrap Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+</head>
+<body>
+    <div class="text-center">
+        <h1 style="margin-top: 40px;" class="mb-4">Modifier le contact</h1>
+    </div>
+    <form method="post" action="{{ url_for('views.edit_contact', contact_id=contact.id) }}" class="mx-auto col-md-6 mb-5">
+        <div class="form-group">
+            <label for="first_name">Prénom:</label>
+            <input type="text" class="form-control" name="first_name" value="{{ contact.first_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">Nom:</label>
+            <input type="text" class="form-control" name="last_name" value="{{ contact.last_name }}" required>
+        </div>
+
+
+
+        <div class="form-group">
+    <label for="address">Adresse:</label>
+    <input type="text" class="form-control" name="address" id="addressInput" value="{{ contact.address }}">
+    <ul id="autocompleteResults"></ul>
+</div>
+
+
+
+
+
+
+        <div class="form-group">
+            <label for="postal_code">Code postal:</label>
+            <input type="text" class="form-control" name="postal_code" value="{{ contact.postal_code }}">
+        </div>
+
+
+
+
+        <div class="form-group">
+            <label for="birthday">Date d'anniversaire:</label>
+            <input type="date" class="form-control" name="birthday" value="{{ contact.birthday }}">
+            <div class="input-group-addon"></div>
+
+        </div>
+
+
+
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" name="email" value="{{ contact.email }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Numéro de téléphone:</label>
+            <input type="text" class="form-control" name="phone" value="{{ contact.phone }}" required>
+        </div>
+
+     <div class="form-group">
+    <label for="category">Catégorie:</label>
+    <select class="form-control" name="category">
+        {% for category_option in ["Travail", "Ami", "Famille"] %}
+            <option value="{{ category_option }}" {% if contact.category == category_option %}selected{% endif %}>{{ category_option }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+             <a href="{{ url_for('views.contacts') }}" class="btn btn-secondary">Retour</a>
+        </div>
+    </form>
+
+
+    <!-- Initialiser le Datepicker -->
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            });
+        });
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Récupérer la référence de l'élément input et de la liste des résultats
+    var addressInput = document.getElementById('addressInput');
+    var autocompleteResults = document.getElementById('autocompleteResults');
+
+    // Écouter l'événement d'entrée utilisateur pour déclencher la recherche d'autocomplétion
+    addressInput.addEventListener('input', function() {
+        // Récupérer la valeur de l'adresse entrée par l'utilisateur
+        var query = addressInput.value.trim();
+
+        // Effacer la liste des résultats précédents
+        autocompleteResults.innerHTML = '';
+
+        // Vérifier si la requête n'est pas vide
+        if (query !== '') {
+            // Effectuer une requête à l'API Adresse pour obtenir des résultats d'autocomplétion
+            var apiUrl = `https://api-adresse.data.gouv.fr/search/?q=${query}&autocomplete=1`;
+
+            // Utiliser fetch pour faire la requête
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // Traiter les résultats de la réponse
+                    var results = data.features;
+
+                    // Afficher les résultats dans la liste déroulante
+                    results.forEach(result => {
+                        var listItem = document.createElement('li');
+                        listItem.textContent = result.properties.label;
+                        autocompleteResults.appendChild(listItem);
+
+                        // Ajouter un gestionnaire d'événements pour remplir l'adresse dans le champ texte
+                       // Ajouter un gestionnaire d'événements pour remplir l'adresse dans le champ texte
+listItem.addEventListener('click', function() {
+    // Retirer le code postal de l'adresse avant de l'afficher
+    var addressWithoutPostalCode = result.properties.label.replace(/\s\d{5}$/, '');
+    addressInput.value = addressWithoutPostalCode.trim();
+
+    // Extraire le numéro de rue, le nom de rue et la ville de l'adresse
+    var streetInfo = result.properties.street;
+    var city = result.properties.city;
+
+    // Construire l'adresse sans le code postal
+    var newAddress = streetInfo + ', ' + city;
+
+    // Remplir le champ du code postal avec le véritable code postal
+    var postalCode = result.properties.postcode;
+    document.getElementsByName('postal_code')[0].value = postalCode;
+
+    // Remplacer la valeur de l'adresse par la nouvelle adresse
+    addressInput.value = newAddress;
+
+    // Effacer la liste des résultats
+    autocompleteResults.innerHTML = '';
+});
+
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+    });
+});
+
+</script>
+</body>
+</html>
+{% endblock %}

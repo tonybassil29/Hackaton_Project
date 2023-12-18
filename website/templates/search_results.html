@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Balises meta, title, etc. -->
+</head>
+<body>
+    <h1>Résultats de la recherche</h1>
+    <ul>
+        {% for contact in contacts %}
+            <li>{{ contact.first_name }} {{ contact.last_name }} - {{ contact.email }} - {{ contact.phone }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('views.contacts') }}">Retour à la liste des contacts</a>
+</body>
+</html>

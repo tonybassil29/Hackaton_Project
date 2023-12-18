@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Ajouter un contact{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+
+</head>
+<style>
+
+    h1 {
+        color: white;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 25%;
+    }
+     h2 {
+        color: white;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+         font-size: 15px;
+
+
+    }
+
+     .a {
+        color: white;
+         border: 2px solid white;
+         border-radius: 10px;
+         padding: 5px;
+         transition: 0.7s;
+
+    }
+     .a:hover {
+         background-color: #262626;
+         text-decoration: none;
+         color: white;
+         transform: scale(1.1);
+
+     }
+
+</style>
+<body class="bg-dark">
+ <h1>Bienvenue dans votre carnet d'adresse </h1>
+ <h2><a class="a" href="{{ url_for('auth.sign_up') }}" >Créer un compte</a></h2>
+</body>
+</html>
+{%  endblock %}
+
+
